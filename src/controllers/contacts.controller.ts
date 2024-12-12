@@ -12,11 +12,11 @@ export class ContactsController {
     @Param('userId') userId: string,
     @Body() contactDetails: { name: string; phoneNumber: string },
   ) {
-    return this.contactsService.addContact(userId, contactDetails);
+    return await this.contactsService.addContact(userId, contactDetails);
   }
 
   @Get(':userId')
   async getContacts(@Param('userId') userId: string) {
-    return this.contactsService.getContacts(userId);
+    return await this.contactsService.getContacts(userId);
   }
 }

@@ -3,6 +3,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Contact } from '@/entities/contacts.entity';
 import { User } from '@/entities/user.entity';
+import { Utils } from '@/utils/common-utils';
 
 @Injectable()
 export class ContactsService {
@@ -25,7 +26,8 @@ export class ContactsService {
       ...contactDetails,
       owner: user,
     });
-    return this.contactRepository.save(newContact);
+    await this.contactRepository.save(newContact);
+    return Utils.mapToUserResponsePayload(newContact);
   }
 
   async markAsSpam(userId: string, phoneNumber: string) {
@@ -48,9 +50,10 @@ export class ContactsService {
   }
 
   async getContacts(userId: string) {
-    return this.contactRepository.find({
+    const contacts = await this.contactRepository.find({
       where: { owner: { id: userId } },
       relations: ['owner'],
     });
+    return contacts.map((contact) => Utils.mapToUserResponsePayload(contact));
   }
 }
