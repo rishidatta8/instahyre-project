@@ -17,4 +17,7 @@ export class Contact {
 
   @Column({ default: 0 })
   spamCount: number;
+
+  @Column('uuid', { array: true, default: [] })
+  markedBy?: string[];
 }

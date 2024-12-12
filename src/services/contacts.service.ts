@@ -36,7 +36,7 @@ export class ContactsService {
     });
     if (contacts && contacts.length > 0) {
       for (const contact of contacts) {
-        contact.spamCount = contact.spamCount + 1;
+        Utils.validateAndUpdateSpamContact(contact, userId, phoneNumber);
         await this.contactRepository.save(contact);
       }
     } else {
@@ -44,6 +44,7 @@ export class ContactsService {
         name: 'Spam Contact',
         phoneNumber,
         spamCount: 1,
+        markedBy: [userId],
       });
       await this.contactRepository.save(newSpamContact);
     }
