@@ -16,7 +16,7 @@ export class AuthService {
     const hashedPassword: string = await bcrypt.hash(userDetails.password, 10);
     userDetails.password = hashedPassword;
     const newUser = this.userRepository.create(userDetails);
-    return this.userRepository.save(newUser);
+    return await this.userRepository.save(newUser);
   }
 
   async validateUser(phoneNumber: string, password: string) {

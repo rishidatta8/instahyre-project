@@ -1,6 +1,7 @@
 import { DataSource } from 'typeorm';
 import { User } from '../entities/user.entity';
 import { Contact } from '../entities/contacts.entity';
+import * as bcrypt from 'bcrypt';
 
 const dataSource = new DataSource({
   type: 'postgres',
@@ -41,6 +42,7 @@ async function populateDummyData() {
   ];
 
   for (const userData of users) {
+    userData.password = await bcrypt.hash(userData.password, 10);
     const user = userRepository.create(userData);
     await userRepository.save(user);
 

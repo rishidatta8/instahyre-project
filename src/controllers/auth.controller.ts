@@ -11,6 +11,6 @@ export class AuthController {
     @Body()
     body: RegisterUserRequestPayload,
   ) {
-    return this.authService.register(body);
+    return await this.authService.register(body);
   }
 }
