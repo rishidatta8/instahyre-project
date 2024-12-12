@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ILike, Not, Repository } from 'typeorm';
+import { FindManyOptions, ILike, Not, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '@/entities/user.entity';
 import { Contact } from '@/entities/contacts.entity';
@@ -18,14 +18,12 @@ export class SearchService {
 
   async searchByName(query: string) {
     const loggedInUser: User = this.userContext.getCurrentUser();
-    const users: User[] = await this.userRepository.find({
+    const filter: FindManyOptions = {
       where: { name: ILike(`%${query}%`) },
       order: { name: 'ASC' },
-    });
-    const contacts: Contact[] = await this.contactRepository.find({
-      where: { name: ILike(`%${query}%`) },
-      order: { name: 'ASC' },
-    });
+    };
+    const users: User[] = await this.userRepository.find(filter);
+    const contacts: Contact[] = await this.contactRepository.find(filter);
 
     // Sort users to prioritize exact matches
     const sortedRecords = [...users, ...contacts].sort((a, b) => {
