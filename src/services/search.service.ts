@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ILike, Repository } from 'typeorm';
+import { ILike, Not, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '@/entities/user.entity';
 import { Contact } from '@/entities/contacts.entity';
@@ -33,11 +33,11 @@ export class SearchService {
   }
 
   async searchByPhoneNumber(phoneNumber: string) {
+    const loggedInUser: User = this.userContext.getCurrentUser();
     const user: User = await this.userRepository.findOne({
-      where: { phoneNumber },
+      where: { phoneNumber, id: Not(loggedInUser.id) },
     });
     if (user) {
-      const loggedInUser: User = this.userContext.getCurrentUser();
       const includeEmail: boolean = loggedInUser.contacts.some(
         (contact) => contact.phoneNumber === user.phoneNumber,
       );
@@ -49,6 +49,6 @@ export class SearchService {
         owner: true,
       },
     });
-    return results;
+    return results.map((contact) => Utils.mapToUserResponsePayload(contact));
   }
 }

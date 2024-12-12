@@ -49,7 +49,7 @@ async function populateDummyData() {
     // Add contacts for each user
     const contacts = [
       { name: 'David', phoneNumber: '4445556666', owner: user },
-      { name: 'Eve', phoneNumber: '7778889999', owner: user },
+      { name: 'Eve', phoneNumber: '0987654321', owner: user },
     ];
     for (const contactData of contacts) {
       const contact = contactRepository.create(contactData);

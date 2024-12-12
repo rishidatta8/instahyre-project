@@ -9,7 +9,7 @@ import { Repository } from 'typeorm';
 export class BasicAuthGuard implements CanActivate {
   constructor(
     private readonly userContext: UserContext,
-    @InjectRepository(User) private readonly userRepository: Repository<User>, // Inject the repository
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
