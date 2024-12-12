@@ -7,7 +7,7 @@ export class SearchController {
 
   @Get('name')
   async searchByName(@Query('query') query: string) {
-    return this.searchService.searchByName(query);
+    return await this.searchService.searchByName(query);
   }
 
   @Get('phone')

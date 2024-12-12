@@ -29,23 +29,22 @@ export class ContactsService {
   }
 
   async markAsSpam(userId: string, phoneNumber: string) {
-    const user = await this.userRepository.findOne({ where: { id: userId } });
-    if (!user) throw new Error('User not found');
-
-    let contact = await this.contactRepository.findOne({
-      where: { phoneNumber, owner: user },
+    const contacts: Contact[] = await this.contactRepository.find({
+      where: { phoneNumber },
     });
-    if (!contact) {
-      contact = this.contactRepository.create({
-        name: 'Unknown',
-        phoneNumber,
-        isSpam: true,
-        owner: user,
-      });
+    if (contacts && contacts.length > 0) {
+      for (const contact of contacts) {
+        contact.spamCount = contact.spamCount + 1;
+        await this.contactRepository.save(contact);
+      }
     } else {
-      contact.isSpam = true;
+      const newSpamContact = this.contactRepository.create({
+        name: 'Spam Contact',
+        phoneNumber,
+        spamCount: 1,
+      });
+      await this.contactRepository.save(newSpamContact);
     }
-    return this.contactRepository.save(contact);
   }
 
   async getContacts(userId: string) {

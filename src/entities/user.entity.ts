@@ -20,4 +20,7 @@ export class User {
 
   @OneToMany(() => Contact, (contact) => contact.owner)
   contacts: Contact[];
+
+  @Column({ default: 0 })
+  spamCount: number;
 }

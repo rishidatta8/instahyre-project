@@ -15,6 +15,6 @@ export class Contact {
   @ManyToOne(() => User, (user) => user.contacts)
   owner: User;
 
-  @Column({ default: false })
-  isSpam: boolean;
+  @Column({ default: 0 })
+  spamCount: number;
 }

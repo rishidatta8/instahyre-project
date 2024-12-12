@@ -13,14 +13,6 @@ export class ContactsController {
     return this.contactsService.addContact(userId, contactDetails);
   }
 
-  @Post(':userId/spam')
-  async markAsSpam(
-    @Param('userId') userId: string,
-    @Body('phoneNumber') phoneNumber: string,
-  ) {
-    return this.contactsService.markAsSpam(userId, phoneNumber);
-  }
-
   @Get(':userId')
   async getContacts(@Param('userId') userId: string) {
     return this.contactsService.getContacts(userId);

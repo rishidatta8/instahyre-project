@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { Like, Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '@/entities/user.entity';
 import { Contact } from '@/entities/contacts.entity';
+import { Utils } from '@/utils/common-utils';
 
 @Injectable()
 export class SearchService {
@@ -14,10 +15,19 @@ export class SearchService {
   ) {}
 
   async searchByName(query: string) {
-    return this.userRepository.find({
-      where: { name: Like(query) },
-      //   `name ILIKE '${query}%' OR name ILIKE '%${query}%'`,
+    const users: User[] = await this.userRepository.find({
+      where: { name: ILike(`%${query}%`) },
+      order: { name: 'ASC' },
     });
+
+    // Sort users to prioritize exact matches
+    return users
+      .sort((a, b) => {
+        if (a.name.toLowerCase() === query.toLowerCase()) return -1;
+        if (b.name.toLowerCase() === query.toLowerCase()) return 1;
+        return a.name.localeCompare(b.name);
+      })
+      .map((user: User) => Utils.mapToUserResponsePayload(user));
   }
 
   async searchByPhoneNumber(phoneNumber: string) {
