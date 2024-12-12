@@ -28,20 +28,20 @@ export class SearchService {
     });
 
     // Sort users to prioritize exact matches
-    return [...users, ...contacts]
-      .sort((a, b) => {
-        const startsWithA = (name) =>
-          name.toLowerCase().startsWith(query.toLowerCase());
-        if (startsWithA(a.name) && !startsWithA(b.name)) return -1;
-        if (!startsWithA(a.name) && startsWithA(b.name)) return 1;
-        return a.name.localeCompare(b.name);
-      })
-      .map((user: User) =>
-        Utils.mapToUserResponsePayload(
-          user,
-          this.includeEmail(loggedInUser, user),
-        ),
-      );
+    const sortedRecords = [...users, ...contacts].sort((a, b) => {
+      const startsWithA = (name) =>
+        name.toLowerCase().startsWith(query.toLowerCase());
+      if (startsWithA(a.name) && !startsWithA(b.name)) return -1;
+      if (!startsWithA(a.name) && startsWithA(b.name)) return 1;
+      return a.name.localeCompare(b.name);
+    });
+
+    return sortedRecords.map((user: User) =>
+      Utils.mapToUserResponsePayload(
+        user,
+        this.includeEmail(loggedInUser, user),
+      ),
+    );
   }
 
   async searchByPhoneNumber(phoneNumber: string) {
