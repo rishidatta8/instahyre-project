@@ -30,7 +30,11 @@ export class ContactsService {
     return Utils.mapToUserResponsePayload(newContact);
   }
 
-  async markAsSpam(userId: string, phoneNumber: string) {
+  async markAsSpam(
+    userId: string,
+    phoneNumber: string,
+    registeredSpamUserFound: boolean,
+  ) {
     const contacts: Contact[] = await this.contactRepository.find({
       where: { phoneNumber },
     });
@@ -39,7 +43,7 @@ export class ContactsService {
         Utils.validateAndUpdateSpamContact(contact, userId, phoneNumber);
         await this.contactRepository.save(contact);
       }
-    } else {
+    } else if (!registeredSpamUserFound) {
       const newSpamContact = this.contactRepository.create({
         name: 'Spam Contact',
         phoneNumber,
