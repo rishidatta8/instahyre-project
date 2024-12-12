@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Contact } from '@/entities/contacts.entity';
 import { User } from '@/entities/user.entity';
 import { Utils } from '@/utils/common-utils';
+import { UserContext } from '@/utils/user.context';
 
 @Injectable()
 export class ContactsService {
@@ -13,6 +14,7 @@ export class ContactsService {
 
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly userContext: UserContext,
   ) {}
 
   async addContact(
@@ -54,9 +56,10 @@ export class ContactsService {
     }
   }
 
-  async getContacts(userId: string) {
+  async getContacts() {
+    const loggedInUser: User = this.userContext.getCurrentUser();
     const contacts = await this.contactRepository.find({
-      where: { owner: { id: userId } },
+      where: { owner: { id: loggedInUser.id } },
       relations: ['owner'],
     });
     return contacts.map((contact) => Utils.mapToUserResponsePayload(contact));
