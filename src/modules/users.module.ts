@@ -5,10 +5,11 @@ import { UsersService } from '@/services/users.service';
 import { UsersController } from '@/controllers/users.controller';
 import { Contact } from '@/entities/contacts.entity';
 import { ContactsService } from '@/services/contacts.service';
+import { UserContext } from '@/utils/user.context';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User, Contact])],
-  providers: [UsersService, ContactsService],
+  providers: [UsersService, ContactsService, UserContext],
   controllers: [UsersController],
 })
 export class UsersModule {}

@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '@/entities/user.entity';
 import { Contact } from '@/entities/contacts.entity';
 import { Utils } from '@/utils/common-utils';
+import { UserContext } from '@/utils/user.context';
 
 @Injectable()
 export class SearchService {
@@ -12,6 +13,7 @@ export class SearchService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(Contact)
     private readonly contactRepository: Repository<Contact>,
+    private readonly userContext: UserContext,
   ) {}
 
   async searchByName(query: string) {
@@ -31,8 +33,21 @@ export class SearchService {
   }
 
   async searchByPhoneNumber(phoneNumber: string) {
+    const user: User = await this.userRepository.findOne({
+      where: { phoneNumber },
+    });
+    if (user) {
+      const loggedInUser: User = this.userContext.getCurrentUser();
+      const includeEmail: boolean = loggedInUser.contacts.some(
+        (contact) => contact.phoneNumber === user.phoneNumber,
+      );
+      return Utils.mapToUserResponsePayload(user, includeEmail);
+    }
     const results = await this.contactRepository.find({
       where: { phoneNumber },
+      relations: {
+        owner: true,
+      },
     });
     return results;
   }

@@ -7,9 +7,12 @@ import { ConfigModule } from '@nestjs/config';
 import { ContactsModule } from './modules/contacts.module';
 import { Contact } from './entities/contacts.entity';
 import { User } from './entities/user.entity';
-
+import { APP_GUARD } from '@nestjs/core';
+import { BasicAuthGuard } from './auth/auth-guard';
+import { UserContext } from './utils/user.context';
 @Module({
   imports: [
+    TypeOrmModule.forFeature([User]),
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -26,6 +29,13 @@ import { User } from './entities/user.entity';
     UsersModule,
     SearchModule,
     ContactsModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: BasicAuthGuard,
+    },
+    UserContext,
   ],
 })
 export class AppModule {}

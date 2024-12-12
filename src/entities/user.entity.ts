@@ -13,14 +13,14 @@ export class User {
   phoneNumber: string;
 
   @Column({ nullable: true })
-  email: string;
+  email?: string;
 
   @Column()
-  password: string;
+  password?: string;
 
   @OneToMany(() => Contact, (contact) => contact.owner)
-  contacts: Contact[];
+  contacts?: Contact[];
 
   @Column({ default: 0 })
-  spamCount: number;
+  spamCount?: number;
 }
