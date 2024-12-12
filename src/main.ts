@@ -13,6 +13,7 @@ async function bootstrap() {
     .setDescription('Contacts directory project')
     .setVersion('1.0')
     .addTag('instahyre')
+    .addBasicAuth()
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);

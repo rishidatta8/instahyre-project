@@ -1,16 +1,23 @@
 import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { SearchService } from '@/services/search.service';
 import { BasicAuthGuard } from '@/auth/auth-guard';
-import { ApiTags, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBasicAuth,
+  ApiQuery,
+} from '@nestjs/swagger';
 
 @ApiTags('Search')
 @Controller('search')
+@ApiBasicAuth()
 @UseGuards(BasicAuthGuard)
 export class SearchController {
   constructor(private readonly searchService: SearchService) {}
 
   @ApiOperation({ summary: 'Search contacts by name' })
-  @ApiParam({
+  @ApiQuery({
     name: 'query',
     type: 'string',
     description: 'The name search query',
@@ -25,7 +32,7 @@ export class SearchController {
   }
 
   @ApiOperation({ summary: 'Search contacts by phone number' })
-  @ApiParam({
+  @ApiQuery({
     name: 'phoneNumber',
     type: 'string',
     description: 'The phone number search query',

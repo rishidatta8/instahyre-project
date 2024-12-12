@@ -1,10 +1,17 @@
 import { BasicAuthGuard } from '@/auth/auth-guard';
 import { ContactsService } from '@/services/contacts.service';
 import { Controller, Post, Body, Get, Param, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiBasicAuth,
+} from '@nestjs/swagger';
 
 @ApiTags('Contacts')
 @Controller('contacts')
+@ApiBasicAuth()
 @UseGuards(BasicAuthGuard)
 export class ContactsController {
   constructor(private readonly contactsService: ContactsService) {}

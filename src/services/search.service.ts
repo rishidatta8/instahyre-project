@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { FindManyOptions, ILike, Not, Repository } from 'typeorm';
+import { FindManyOptions, ILike, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '@/entities/user.entity';
 import { Contact } from '@/entities/contacts.entity';
@@ -45,7 +45,7 @@ export class SearchService {
   async searchByPhoneNumber(phoneNumber: string) {
     const loggedInUser: User = this.userContext.getCurrentUser();
     const user: User = await this.userRepository.findOne({
-      where: { phoneNumber, id: Not(loggedInUser.id) },
+      where: { phoneNumber },
     });
     if (user) {
       const includeEmail: boolean = this.includeEmail(loggedInUser, user);
